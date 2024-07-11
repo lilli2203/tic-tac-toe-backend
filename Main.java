@@ -1,40 +1,38 @@
-package com.example;
+public class Main {
+    public static void main(String[] args) throws InvalidMoveException {
+        System.out.println("Welcome to the Tic-Tac-Toe game!");
+        Scanner scanner = new Scanner(System.in);
+        GameController gameController = new GameController();
 
-import com.example.controllers.GameController;
-import com.example.exceptions.InvalidMoveException;
-import com.example.models.*;
+        int dimension = 3;
+        List<Player> players = List.of(
+                new Player("Harsh", new Symbol('X'), PlayerType.HUMAN),
+                new Bot("Scaler", new Symbol('O'), PlayerType.BOT, BotDifficultyLevel.EASY)
+        );
 
-import java.util.List;
-import java.util.Scanner;
+        Game game = gameController.startGame(dimension, players);
+        List<String> moveHistory = new ArrayList<>();
 
-public class Main {public static void main(String[] args) throws InvalidMoveException {
-    System.out.println("Hello world!");
-    Scanner scanner = new Scanner(System.in);
-    GameController gameController = new GameController();
+        while (game.getGameState().equals(GameState.IN_PROGRESS)) {
+            gameController.printBoard(game);
 
-    int dimension = 3;
-    List<Player> players = List.of(
-            new Player("Harsh", new Symbol('X'), PlayerType.HUMAN),
-            new Bot("Scaler", new Symbol('O'), PlayerType.BOT, BotDifficultyLevel.EASY)
-    );
+            String moveInfo = "Player " + gameController.getCurrentPlayer(game).getName() + " is making a move.";
+            moveHistory.add(moveInfo);
 
-    Game game = gameController.startGame(dimension, players);
-    //gameController.printBoard(game);
+            gameController.makeMove(game);
+        }
 
-    while (game.getGameState().equals(GameState.IN_PROGRESS)) {
-        //1. print the board.
         gameController.printBoard(game);
 
-        //2. Player's turn
-        gameController.makeMove(game);
-    }
+        if (game.getGameState().equals(GameState.DRAW)) {
+            System.out.println("Game DRAW");
+        } else {
+            System.out.println("Player " + gameController.getWinner(game).getName() + " is the winner");
+        }
 
-    if (!gameController.checkState(game).equals(GameState.ENDED)) {
-        game.setGameState(GameState.DRAW);
-        System.out.println("Game DRAW");
-    } else {
-        gameController.printBoard(game);
-        System.out.println("Player " + gameController.getWinner(game).getName() + " is the winner");
+        System.out.println("Move History:");
+        for (String move : moveHistory) {
+            System.out.println(move);
+        }
     }
-}
 }
