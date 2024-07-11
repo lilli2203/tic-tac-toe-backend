@@ -40,12 +40,57 @@ public class Board {
         for (List<Cell> row : board) {
             for (Cell cell : row) {
                 if (cell.getCellState().equals(CellState.EMPTY)) {
-                    System.out.print("| -- |");
+                    System.out.print("|    |");
                 } else {
                     System.out.print("| " + cell.getPlayer().getSymbol().getaChar() + " |");
                 }
             }
             System.out.println();
+        }
+        printColumnNumbers();
+    }
+
+    private void printColumnNumbers() {
+        System.out.print(" ");
+        for (int i = 0; i < size; i++) {
+            System.out.print("  " + i + "   ");
+        }
+        System.out.println();
+    }
+
+    public boolean isFull() {
+        for (List<Cell> row : board) {
+            for (Cell cell : row) {
+                if (cell.getCellState().equals(CellState.EMPTY)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public List<Cell> getEmptyCells() {
+        List<Cell> emptyCells = new ArrayList<>();
+        for (List<Cell> row : board) {
+            for (Cell cell : row) {
+                if (cell.getCellState().equals(CellState.EMPTY)) {
+                    emptyCells.add(cell);
+                }
+            }
+        }
+        return emptyCells;
+    }
+
+    public boolean isValidMove(int row, int col) {
+        return row >= 0 && row < size && col >= 0 && col < size && board.get(row).get(col).getCellState().equals(CellState.EMPTY);
+    }
+
+    public void placeMove(int row, int col, Player player) {
+        if (isValidMove(row, col)) {
+            board.get(row).get(col).setPlayer(player);
+            board.get(row).get(col).setCellState(CellState.FILLED);
+        } else {
+            throw new IllegalArgumentException("Invalid move");
         }
     }
 }
