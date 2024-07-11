@@ -135,6 +135,43 @@ public class Board {
         return mainDiagonal || antiDiagonal;
     }
 
+    public boolean checkDraw() {
+        return isFull() && !checkWin(getCurrentPlayer()) && !checkWin(getOtherPlayer());
+    }
+
+    private Player getCurrentPlayer() {
+        int countX = 0, countO = 0;
+        for (List<Cell> row : board) {
+            for (Cell cell : row) {
+                if (cell.getPlayer() != null) {
+                    if (cell.getPlayer().getSymbol().getaChar() == 'X') {
+                        countX++;
+                    } else {
+                        countO++;
+                    }
+                }
+            }
+        }
+        if (countX == countO) {
+            return new Player("Harsh", new Symbol('X'), PlayerType.HUMAN);
+        } else {
+            return new Player("Scaler", new Symbol('O'), PlayerType.BOT, BotDifficultyLevel.EASY);
+        }
+    }
+
+    private Player getOtherPlayer() {
+        Player currentPlayer = getCurrentPlayer();
+        for (List<Cell> row : board) {
+            for (Cell cell : row) {
+                Player cellPlayer = cell.getPlayer();
+                if (cellPlayer != null && !cellPlayer.equals(currentPlayer)) {
+                    return cellPlayer;
+                }
+            }
+        }
+        throw new IllegalStateException("No other player found");
+    }
+
     public void resetBoard() {
         for (List<Cell> row : board) {
             for (Cell cell : row) {
