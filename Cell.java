@@ -10,6 +10,7 @@ public class Cell {
         this.row = row;
         this.col = col;
         this.cellState = CellState.EMPTY;
+        this.player = null;
     }
 
     public int getRow() {
@@ -42,5 +43,31 @@ public class Cell {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public boolean isOccupied() {
+        return cellState != CellState.EMPTY;
+    }
+
+    public void reset() {
+        this.cellState = CellState.EMPTY;
+        this.player = null;
+    }
+
+    @Override
+    public String toString() {
+        if (cellState == CellState.EMPTY) {
+            return "Cell[" + row + ", " + col + "] is empty.";
+        } else {
+            return "Cell[" + row + ", " + col + "] is occupied by " + player.getName() + ".";
+        }
+    }
+
+    public String display() {
+        if (cellState == CellState.EMPTY) {
+            return " ";
+        } else {
+            return player.getSymbol().getaChar() + "";
+        }
     }
 }
