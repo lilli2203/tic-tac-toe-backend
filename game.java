@@ -1,11 +1,3 @@
-package com.example.models;
-
-import com.example.exceptions.InvalidMoveException;
-import com.example.strategies.WinningAlgorithm;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Game {
     private Board board;
     private List<Player> players;
@@ -15,14 +7,14 @@ public class Game {
     private int nextPlayerMoveIndex;
     private WinningAlgorithm winningAlgorithm;
 
-    public Game(int dimension, List<Player> players) {
+    public Game(int dimension, List<Player> players, WinningAlgorithm winningAlgorithm) {
         this.board = new Board(dimension);
         this.players = players;
         this.moves = new ArrayList<>();
         this.gameState = GameState.IN_PROGRESS;
         this.winner = null;
         this.nextPlayerMoveIndex = 0;
-        this.winningAlgorithm = new WinningAlgorithm();
+        this.winningAlgorithm = winningAlgorithm;
     }
 
     public Board getBoard() {
@@ -81,7 +73,7 @@ public class Game {
         int row = move.getCell().getRow();
         int col = move.getCell().getCol();
 
-        if (row < 0 || row >= board.getSize() || col < 0  || col >= board.getSize()) {
+        if (row < 0 || row >= board.getSize() || col < 0 || col >= board.getSize()) {
             return false;
         }
 
@@ -89,22 +81,21 @@ public class Game {
     }
 
     public void makeMove() throws InvalidMoveException {
-        Player currentPlayer = players.get(nextPlayerMoveIndex);
+        if (gameState != GameState.IN_PROGRESS) {
+            throw new IllegalStateException("Game is not in progress.");
+        }
 
+        Player currentPlayer = players.get(nextPlayerMoveIndex);
         System.out.println("It is " + currentPlayer.getName() + "'s move.");
 
-        //Move that currentPlayer wants to make
         Move move = currentPlayer.makeMove(board);
 
-        //Game will validate the move before executing.
         if (!validateMove(move)) {
-            //throw an exception
             throw new InvalidMoveException("Invalid move made by " + currentPlayer.getName());
         }
 
         int row = move.getCell().getRow();
         int col = move.getCell().getCol();
-
         Cell cellToChange = board.getBoard().get(row).get(col);
         cellToChange.setPlayer(currentPlayer);
         cellToChange.setCellState(CellState.FILLED);
@@ -113,10 +104,48 @@ public class Game {
         moves.add(finalMove);
         nextPlayerMoveIndex = (nextPlayerMoveIndex + 1) % players.size();
 
-        //Check if the current move is the winning move or not.
         if (winningAlgorithm.checkWinner(board, finalMove)) {
             gameState = GameState.ENDED;
             winner = currentPlayer;
+        } else if (board.isFull()) {
+            gameState = GameState.DRAW;
+        }
+    }
+
+    public void resetGame() {
+        board.resetBoard();
+        moves.clear();
+        gameState = GameState.IN_PROGRESS;
+        winner = null;
+        nextPlayerMoveIndex = 0;
+    }
+
+    public boolean isGameEnded() {
+        return gameState == GameState.ENDED;
+    }
+
+    public boolean isGameInProgress() {
+        return gameState == GameState.IN_PROGRESS;
+    }
+
+    public boolean isGameDraw() {
+        return gameState == GameState.DRAW;
+    }
+
+    public void startGame() {
+        while (gameState == GameState.IN_PROGRESS) {
+            try {
+                makeMove();
+                printBoard();
+            } catch (InvalidMoveException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        if (gameState == GameState.ENDED) {
+            System.out.println("The winner is " + winner.getName() + "!");
+        } else if (gameState == GameState.DRAW) {
+            System.out.println("The game is a draw!");
         }
     }
 }
