@@ -34,18 +34,22 @@ The game can be played through the command line. Follow the prompts to make move
 
 ## Models
 
-Board: Represents the game board and contains methods for initializing the board, printing the board, checking for a win, and validating moves.
-Bot: Represents a bot player with different difficulty levels.
-Cell: Represents a cell on the board, including its state (EMPTY or FILLED) and the player who occupies it.
-Game: Manages the game state, including the board, players, moves history, and the current game state.
-Move: Represents a move made by a player, including the cell and player information.
-Player: Represents a human player with methods for making moves.
-PlayerType: Enum defining player types (HUMAN, BOT).
-Symbol: Represents a player's symbol (X or O).
+Board: Represents the game board and contains methods for initializing the board, printing the board, checking for a win, and validating moves.<br>
+Bot: Represents a bot player with different difficulty levels.<br>
+Cell: Represents a cell on the board, including its state (EMPTY or FILLED) and the player who occupies it.<br>
+Game: Manages the game state, including the board, players, moves history, and the current game state.<br>
+Move: Represents a move made by a player, including the cell and player information.<br>
+Player: Represents a human player with methods for making moves.<br>
+PlayerType: Enum defining player types (HUMAN, BOT).<br>
+Symbol: Represents a player's symbol (X or O).<br>
 GameState: Enum defining the state of the game (IN_PROGRESS, ENDED, DRAW).
-Controllers
+<br>
+## Controllers
 GameController: Manages game flow, validates players, makes moves, checks game state, prints the board, and logs moves.
-Strategies
+<br>
+## Strategies
 WinningAlgorithm: Contains logic to determine if a player has won the game based on the current state of the board.
-Exceptions
+<br>
+## Exceptions 
+<br>
 InvalidMoveException: Custom exception thrown when an invalid move is made.
